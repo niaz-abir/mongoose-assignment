@@ -20,9 +20,10 @@ export type Users = {
   age: number;
   email: string;
   isActive: boolean;
-  hobbies: [string];
+  hobbies: string[];
   address: allAddress;
   orders: fullOrders;
+  isDeleted: boolean;
 };
 
 export default Users;

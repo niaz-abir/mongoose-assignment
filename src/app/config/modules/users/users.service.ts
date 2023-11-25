@@ -1,5 +1,5 @@
 import { UsersModel } from './users.model';
-import Users from './users.interface';
+import Users, { fullOrders } from './users.interface';
 
 const createUserDb = async (users: Users) => {
   const result = await UsersModel.create(users);
@@ -7,7 +7,8 @@ const createUserDb = async (users: Users) => {
 };
 
 const getUsersDb = async () => {
-  const result = await UsersModel.find();
+  const selectedFields = 'userName fullName age email address';
+  const result = await UsersModel.find().select(selectedFields);
   return result;
 };
 const getSingleUserDb = async (userId: number) => {
@@ -22,6 +23,24 @@ const updateUserDb = async (userId: number, updates: any) => {
   );
   return updateUser;
 };
+
+const insertNewOrder = async (userId: number, order: fullOrders) => {
+  const existingUser = await UsersModel.getExitingUser(userId);
+
+  if (existingUser.orders) {
+    return await UsersModel.updateOne(
+      { userId },
+      { $push: { orders: order } },
+      { new: true },
+    );
+  }
+  return await UsersModel.updateOne(
+    { userId },
+    { $set: { orders: [order] } },
+    { upsert: true },
+  );
+};
+
 const deleteUserDb = async (userId: number) => {
   const deleteUser = await UsersModel.findOneAndDelete(userId);
   return deleteUser;
@@ -32,4 +51,5 @@ export const services = {
   getSingleUserDb,
   updateUserDb,
   deleteUserDb,
+  insertNewOrder,
 };

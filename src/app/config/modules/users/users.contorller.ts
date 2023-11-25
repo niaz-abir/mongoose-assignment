@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import { services } from './users.service';
+import {
+  UsersValidationSchema,
+  ordersValidationSchema,
+} from './student.validation';
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    const result = await services.createUserDb(user);
+    const zodData = UsersValidationSchema.parse(user);
+    const result = await services.createUserDb(zodData);
 
     res.status(200).json({
       success: true,
@@ -13,6 +18,11 @@ const createUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not created',
+      error: error,
+    });
   }
 };
 const getAllUsers = async (req: Request, res: Response) => {
@@ -25,6 +35,11 @@ const getAllUsers = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not fetch',
+      error: error,
+    });
   }
 };
 
@@ -43,6 +58,43 @@ const getSingleUsers = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not fetch',
+      error: error,
+    });
+  }
+};
+const updateBooking = async (req: Request, res: Response) => {
+  try {
+    const { userId, body } = req.params;
+    const userNumber = parseInt(userId);
+    const validateBody = ordersValidationSchema.safeParse(body);
+
+    if (!validateBody.success) {
+      return res.status(200).json({
+        success: true,
+        message: 'success find easily  ',
+      });
+    }
+
+    const result = await services.insertNewOrder(
+      userNumber,
+      validateBody?.data,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'User single find ',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not fetch',
+      error: error,
+    });
   }
 };
 
@@ -55,11 +107,16 @@ const updateSingleUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'User single find ',
+      message: 'User single update ',
       data: result,
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not find',
+      error: error,
+    });
   }
 };
 
@@ -75,6 +132,11 @@ const deleteUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not deleted',
+      error: error,
+    });
   }
 };
 
@@ -84,4 +146,5 @@ export const controllers = {
   getSingleUsers,
   updateSingleUser,
   deleteUser,
+  updateBooking,
 };

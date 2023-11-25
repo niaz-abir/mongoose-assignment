@@ -1,6 +1,13 @@
-import mongoose from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import Users, { allAddress, fullOrders } from './users.interface';
-const { Schema, model } = mongoose;
+import config from '../..';
+
+import bcrypt from 'bcrypt';
+
+type userModel = Model<Users> & {
+  // eslint-disable-next-line no-unused-vars
+  getExitingUser: (userId: number) => Promise<Users>;
+};
 
 const addressSchema = new Schema<allAddress>({
   street: {
@@ -17,7 +24,7 @@ const addressSchema = new Schema<allAddress>({
   },
 });
 
-const ordersSchema = new Schema<fullOrders>({
+export const ordersSchema = new Schema<fullOrders>({
   productName: {
     type: String,
     required: true,
@@ -32,7 +39,7 @@ const ordersSchema = new Schema<fullOrders>({
   },
 });
 
-const userSchema = new Schema<Users>({
+const userSchema = new Schema<Users, userModel>({
   userId: {
     type: Number,
     required: true,
@@ -58,6 +65,7 @@ const userSchema = new Schema<Users>({
   },
   age: {
     type: Number,
+    required: true,
   },
   email: {
     type: String,
@@ -72,6 +80,38 @@ const userSchema = new Schema<Users>({
   },
   address: addressSchema,
   orders: ordersSchema,
+  isDeleted: {
+    type: Boolean,
+    default: true,
+  },
 });
 
-export const UsersModel = model<Users>('Users', userSchema);
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+userSchema.post('save', async function (doc, next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  doc.password = '';
+  next();
+});
+userSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $eq: true } });
+  next();
+});
+
+userSchema.statics.getExitingUser = async (userId: number) => {
+  return await UsersModel.findOne({ userId });
+};
+userSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $eq: true } });
+  next();
+});
+
+export const UsersModel = model<Users, userModel>('Users', userSchema);
