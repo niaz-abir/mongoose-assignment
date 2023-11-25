@@ -98,6 +98,26 @@ const updateBooking = async (req: Request, res: Response) => {
     });
   }
 };
+const updateFindBooking = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const userNumber = parseInt(userId);
+    const orders = await services.findUserOrders(userNumber);
+
+    return res.status(200).json({
+      success: true,
+      message: 'success find easily  ',
+      result: orders,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'data is not fetch',
+      error: error,
+    });
+  }
+};
 
 const updateSingleUser = async (req: Request, res: Response) => {
   try {
@@ -150,4 +170,5 @@ export const controllers = {
   updateSingleUser,
   deleteUser,
   updateBooking,
+  updateFindBooking,
 };

@@ -42,6 +42,16 @@ const insertNewOrder = async (userId: number, order: fullOrders) => {
   );
 };
 
+const findUserOrders = async (userId: number) => {
+  const existingUser = UsersModel.getExitingUser(userId);
+
+  if (!existingUser) {
+    throw new Error('data not fined');
+  }
+
+  return await UsersModel.findOne({ userId }).select({ orders: 1 });
+};
+
 const deleteUserDb = async (userId: number) => {
   const deleteUser = await UsersModel.findOneAndDelete({ userId });
   return deleteUser;
@@ -53,4 +63,5 @@ export const services = {
   updateUserDb,
   deleteUserDb,
   insertNewOrder,
+  findUserOrders,
 };
