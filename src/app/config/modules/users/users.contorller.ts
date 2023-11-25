@@ -75,6 +75,7 @@ const updateBooking = async (req: Request, res: Response) => {
       return res.status(200).json({
         success: true,
         message: 'success find easily  ',
+        result: validateBody,
       });
     }
 
@@ -123,13 +124,15 @@ const updateSingleUser = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const userID = parseInt(req.params.userId);
-    const result = await services.deleteUserDb(userID);
 
-    res.status(200).json({
-      success: true,
-      message: 'deleted successfully ',
-      data: result,
-    });
+    const result = await services.deleteUserDb(userID);
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: 'deleted successfully ',
+        data: null,
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({

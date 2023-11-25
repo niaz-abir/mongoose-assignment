@@ -15,6 +15,7 @@ const getSingleUserDb = async (userId: number) => {
   const result = await UsersModel.findOne({ userId });
   return result;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateUserDb = async (userId: number, updates: any) => {
   const updateUser = await UsersModel.findOneAndUpdate(
     { userId: userId },
@@ -42,7 +43,7 @@ const insertNewOrder = async (userId: number, order: fullOrders) => {
 };
 
 const deleteUserDb = async (userId: number) => {
-  const deleteUser = await UsersModel.findOneAndDelete(userId);
+  const deleteUser = await UsersModel.findOneAndDelete({ userId });
   return deleteUser;
 };
 export const services = {
