@@ -3,13 +3,13 @@ import { services } from './users.service';
 import {
   UsersValidationSchema,
   ordersValidationSchema,
-} from './student.validation';
+} from './users.validation';
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    const zodData = UsersValidationSchema.parse(user);
-    const result = await services.createUserDb(zodData);
+    const userBody = UsersValidationSchema.parse(user);
+    const result = await services.createUserDb(userBody);
 
     res.status(200).json({
       success: true,
@@ -28,9 +28,10 @@ const createUser = async (req: Request, res: Response) => {
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await services.getUsersDb();
+    console.log(result);
     res.status(200).json({
       success: true,
-      message: 'User created successfully!',
+      message: '"Users fetched successfully! !',
       data: result,
     });
   } catch (error) {
@@ -47,13 +48,12 @@ const getSingleUsers = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const userNumber = parseInt(userId);
-    // console.log(userNumber);
+
     const result = await services.getSingleUserDb(userNumber);
-    // console.log(result);
 
     res.status(200).json({
       success: true,
-      message: 'User single find ',
+      message: 'User fetched successfully! ',
       data: result,
     });
   } catch (error) {
@@ -74,7 +74,7 @@ const updateBooking = async (req: Request, res: Response) => {
     if (!validateBody.success) {
       return res.status(200).json({
         success: true,
-        message: 'success find easily  ',
+        message: 'User updated successfully!  ',
         result: validateBody,
       });
     }
@@ -128,7 +128,7 @@ const updateSingleUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'User single update ',
+      message: 'User updated successfully!',
       data: result,
     });
   } catch (error) {
@@ -149,7 +149,7 @@ const deleteUser = async (req: Request, res: Response) => {
     if (result) {
       res.status(200).json({
         success: true,
-        message: 'deleted successfully ',
+        message: 'User deleted successfully! ',
         data: null,
       });
     }

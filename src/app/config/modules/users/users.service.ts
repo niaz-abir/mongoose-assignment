@@ -9,12 +9,16 @@ const createUserDb = async (users: Users) => {
 const getUsersDb = async () => {
   const selectedFields = 'userName fullName age email address';
   const result = await UsersModel.find().select(selectedFields);
+  console.log(result);
   return result;
 };
+
 const getSingleUserDb = async (userId: number) => {
-  const result = await UsersModel.findOne({ userId });
+  const result = await UsersModel.findOne({ userId }).select({ orders: 0 });
+  console.log(result);
   return result;
 };
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateUserDb = async (userId: number, updates: any) => {
   const updateUser = await UsersModel.findOneAndUpdate(

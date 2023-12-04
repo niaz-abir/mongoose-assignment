@@ -23,7 +23,7 @@ export type Users = {
   hobbies: string[];
   address: allAddress;
   orders: fullOrders;
-  isDeleted: boolean;
+  isDeleted: boolean | undefined;
 };
 
 export default Users;
