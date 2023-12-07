@@ -22,7 +22,7 @@ export type Users = {
   isActive: boolean;
   hobbies: string[];
   address: allAddress;
-  orders: fullOrders;
+  orders?: fullOrders;
   isDeleted: boolean | undefined;
 };
 
