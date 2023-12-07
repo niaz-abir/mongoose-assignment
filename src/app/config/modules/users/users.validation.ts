@@ -14,7 +14,7 @@ export const ordersValidationSchema = z.object({
 
 const userSchemaValidationSchema = z.object({
   userId: z.number(),
-  userName: z.string(),
+  username: z.string(),
   password: z.string(),
   fullName: z.object({
     firstName: z.string(),

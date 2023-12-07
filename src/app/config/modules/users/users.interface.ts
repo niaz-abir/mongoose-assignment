@@ -11,7 +11,7 @@ export type fullOrders = {
 
 export type Users = {
   userId: number;
-  userName: string;
+  username: string;
   password: string;
   fullName: {
     firstName: string;
