@@ -9,13 +9,14 @@ const createUserDb = async (users: Users) => {
 const getUsersDb = async () => {
   const selectedFields = 'userName fullName age email address';
   const result = await UsersModel.find().select(selectedFields);
-  console.log(result);
+  // console.log(result)
+
   return result;
 };
 
 const getSingleUserDb = async (userId: number) => {
   const result = await UsersModel.findOne({ userId }).select({ orders: 0 });
-  console.log(result);
+
   return result;
 };
 
