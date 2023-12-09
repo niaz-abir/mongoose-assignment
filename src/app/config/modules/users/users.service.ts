@@ -18,6 +18,7 @@ const getSingleUserDb = async (userId: number) => {
   const result = await UsersModel.findOne({ userId }).select({ orders: 0 });
 
   return result;
+  console.log(result);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
