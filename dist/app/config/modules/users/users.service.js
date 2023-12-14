@@ -18,11 +18,13 @@ const createUserDb = (users) => __awaiter(void 0, void 0, void 0, function* () {
 const getUsersDb = () => __awaiter(void 0, void 0, void 0, function* () {
     const selectedFields = 'userName fullName age email address';
     const result = yield users_model_1.UsersModel.find().select(selectedFields);
+    // console.log(result)
     return result;
 });
 const getSingleUserDb = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield users_model_1.UsersModel.findOne({ userId });
+    const result = yield users_model_1.UsersModel.findOne({ userId }).select({ orders: 0 });
     return result;
+    console.log(result);
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateUserDb = (userId, updates) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,6 +38,13 @@ const insertNewOrder = (userId, order) => __awaiter(void 0, void 0, void 0, func
     }
     return yield users_model_1.UsersModel.updateOne({ userId }, { $set: { orders: [order] } }, { upsert: true });
 });
+const findUserOrders = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingUser = users_model_1.UsersModel.getExitingUser(userId);
+    if (!existingUser) {
+        throw new Error('data not fined');
+    }
+    return yield users_model_1.UsersModel.findOne({ userId }).select({ orders: 1 });
+});
 const deleteUserDb = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const deleteUser = yield users_model_1.UsersModel.findOneAndDelete({ userId });
     return deleteUser;
@@ -47,4 +56,5 @@ exports.services = {
     updateUserDb,
     deleteUserDb,
     insertNewOrder,
+    findUserOrders,
 };

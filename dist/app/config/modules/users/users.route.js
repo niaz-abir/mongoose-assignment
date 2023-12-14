@@ -12,5 +12,6 @@ router.get('/users', users_contorller_1.controllers.getAllUsers);
 router.get('/users/:userId', users_contorller_1.controllers.getSingleUsers);
 router.put('/users/:userId', users_contorller_1.controllers.updateSingleUser);
 router.delete('/users/:userId', users_contorller_1.controllers.deleteUser);
-router.get('/users/:userId/orders', users_contorller_1.controllers.updateBooking);
+// router.put('/users/:userId/orders', controllers.updateBooking);
+// router.get('/users/:userId/orders', controllers.updateFindBooking);
 exports.userRoutes = router;

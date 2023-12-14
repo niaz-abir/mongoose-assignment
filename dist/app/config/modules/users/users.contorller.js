@@ -11,12 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.controllers = void 0;
 const users_service_1 = require("./users.service");
-const student_validation_1 = require("./student.validation");
+const users_validation_1 = require("./users.validation");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.body;
-        const zodData = student_validation_1.UsersValidationSchema.parse(user);
-        const result = yield users_service_1.services.createUserDb(zodData);
+        const userBody = users_validation_1.UsersValidationSchema.parse(user);
+        const result = yield users_service_1.services.createUserDb(userBody);
         res.status(200).json({
             success: true,
             message: 'User created successfully!',
@@ -35,9 +35,10 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield users_service_1.services.getUsersDb();
+        console.log(result);
         res.status(200).json({
             success: true,
-            message: 'User created successfully!',
+            message: '"Users fetched successfully! !',
             data: result,
         });
     }
@@ -54,12 +55,10 @@ const getSingleUsers = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { userId } = req.params;
         const userNumber = parseInt(userId);
-        // console.log(userNumber);
         const result = yield users_service_1.services.getSingleUserDb(userNumber);
-        // console.log(result);
         res.status(200).json({
             success: true,
-            message: 'User single find ',
+            message: 'User fetched successfully! ',
             data: result,
         });
     }
@@ -76,11 +75,11 @@ const updateBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const { userId, body } = req.params;
         const userNumber = parseInt(userId);
-        const validateBody = student_validation_1.ordersValidationSchema.safeParse(body);
+        const validateBody = users_validation_1.ordersValidationSchema.safeParse(body);
         if (!validateBody.success) {
             return res.status(200).json({
                 success: true,
-                message: 'success find easily  ',
+                message: 'User updated successfully!  ',
                 result: validateBody,
             });
         }
@@ -100,6 +99,26 @@ const updateBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
 });
+const updateFindBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const userNumber = parseInt(userId);
+        const orders = yield users_service_1.services.findUserOrders(userNumber);
+        return res.status(200).json({
+            success: true,
+            message: 'success find easily  ',
+            result: orders,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'data is not fetch',
+            error: error,
+        });
+    }
+});
 const updateSingleUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = parseInt(req.params.userId);
@@ -107,7 +126,7 @@ const updateSingleUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const result = yield users_service_1.services.updateUserDb(userId, updates);
         res.status(200).json({
             success: true,
-            message: 'User single update ',
+            message: 'User updated successfully!',
             data: result,
         });
     }
@@ -127,7 +146,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (result) {
             res.status(200).json({
                 success: true,
-                message: 'deleted successfully ',
+                message: 'User deleted successfully! ',
                 data: null,
             });
         }
@@ -148,4 +167,5 @@ exports.controllers = {
     updateSingleUser,
     deleteUser,
     updateBooking,
+    updateFindBooking,
 };
